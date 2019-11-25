@@ -29,6 +29,4 @@ class RoutineBloc {
     _workoutsStateController.close();
     _workoutsEventController.close();
   }
-
-
 }

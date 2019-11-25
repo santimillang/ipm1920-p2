@@ -15,8 +15,13 @@ class WorkoutDao {
     List<Routine> workouts = List<Routine>();
 
     for (var doc in result) {
-      workouts.add(Routine(doc['name'],
-          DateFormat().add_yMMMd().format(doc['_id'].dateTime), doc['image']));
+      workouts.add(Routine(
+        doc['name'],
+        DateFormat().add_yMMMd().format(doc['_id'].dateTime),
+        doc['image'],
+        doc['description'][0],
+        doc['exercises'],
+      ));
     }
 
     dataBase.close();

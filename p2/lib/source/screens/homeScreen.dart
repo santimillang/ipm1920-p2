@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:p2/source/bloc/routineBloc.dart';
 import 'package:p2/source/models/routine.dart';
+import 'package:p2/source/screens/detailScreen.dart';
 
-class HomeScreen extends StatefulWidget{
+class HomeScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return HomeScreenState();
   }
-
 }
 
 class HomeScreenState extends State<HomeScreen> {
@@ -50,6 +50,12 @@ class HomeScreenState extends State<HomeScreen> {
                       return ListTile(
                         title: Text(routine.name),
                         subtitle: Text(routine.date),
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return DetailScreen(routine: routine);
+                          }));
+                        },
                       );
                     });
               }
