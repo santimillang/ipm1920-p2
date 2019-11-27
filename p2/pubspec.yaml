@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   mongo_dart: ^0.4.0
   intl: ^0.16.0
+  youtube_player: ^3.5.0
 
 dev_dependencies:
   flutter_test:

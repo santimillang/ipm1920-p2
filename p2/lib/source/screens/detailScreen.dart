@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:p2/source/bloc/exerciseBloc.dart';
 import 'package:p2/source/models/routine.dart';
+import 'package:youtube_player/youtube_player.dart';
 
 ImageProvider buildImageProvider(var namespace) {
   if (namespace.image != '') {
@@ -9,17 +11,6 @@ ImageProvider buildImageProvider(var namespace) {
     return MemoryImage(base64Decode(imageString));
   }
   return AssetImage('assets/notavailable.png');
-}
-
-List<Widget> buildTiles(var exercises) {
-  List<Widget> tiles = List<Widget>();
-  for (var exercise in exercises) {
-    tiles.add(ListTile(
-      title: Text(exercise[0]),
-      subtitle: Text(exercise[1]),
-    ));
-  }
-  return tiles;
 }
 
 class DetailScreen extends StatefulWidget {
@@ -47,10 +38,62 @@ class DetailScreenState extends State<DetailScreen> {
           ),
           Text(widget.routine.description),
           Column(
-            children: buildTiles(widget.routine.exercises),
+            children: _buildTiles(widget.routine.exercises),
           ),
         ],
       ),
+    );
+  }
+
+  List<Widget> _buildTiles(var exercises) {
+    List<Widget> tiles = List<Widget>();
+    for (var exercise in exercises) {
+      tiles.add(ListTile(
+        title: Text(exercise[0]),
+        subtitle: Text(exercise[1]),
+        onTap: () => _load(exercise[0]),
+      ));
+    }
+    return tiles;
+  }
+
+  Future<void> _load(String name) {
+    ExerciseBloc bloc = ExerciseBloc();
+    bloc.videoEvent.add(name);
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(name),
+          content: StreamBuilder(
+            stream: bloc.video,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('There was an error.');
+              } else if (snapshot.data == '') {
+                return Text('No video available.');
+              } else {
+                return YoutubePlayer(
+                  context: context,
+                  source: snapshot.data,
+                  onVideoEnded: () => true,
+                  quality: YoutubeQuality.HD,
+                  playerMode: YoutubePlayerMode.NO_CONTROLS,
+                );
+              }
+            },
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Close'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
     );
   }
 }
