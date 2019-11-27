@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:p2/source/bloc/exerciseBloc.dart';
 import 'package:p2/source/models/routine.dart';
+import 'package:p2/source/screens/trainScreen.dart';
 import 'package:youtube_player/youtube_player.dart';
 
 ImageProvider buildImageProvider(var namespace) {
@@ -39,6 +40,12 @@ class DetailScreenState extends State<DetailScreen> {
         children: <Widget>[
           Image(
             image: buildImageProvider(widget.routine),
+          ),
+          FlatButton(
+            child: Text('Play'),
+            onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) =>
+                    TrainScreen(exercises: widget.routine.exercises))),
           ),
           Text(widget.routine.description),
           Column(
