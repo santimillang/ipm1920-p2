@@ -15,8 +15,9 @@ ImageProvider buildImageProvider(var namespace) {
 
 class DetailScreen extends StatefulWidget {
   final Routine routine;
+  final bool phone;
 
-  DetailScreen({this.routine});
+  DetailScreen({this.routine, this.phone});
 
   @override
   State<StatefulWidget> createState() {
@@ -27,11 +28,14 @@ class DetailScreen extends StatefulWidget {
 class DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.routine.name),
-      ),
-      body: ListView(
+    Widget build;
+
+    if (widget.routine == null) {
+      build = Center(
+        child: Text('Nothing here'),
+      );
+    } else {
+      build = ListView(
         children: <Widget>[
           Image(
             image: buildImageProvider(widget.routine),
@@ -41,7 +45,19 @@ class DetailScreenState extends State<DetailScreen> {
             children: _buildTiles(widget.routine.exercises),
           ),
         ],
-      ),
+      );
+    }
+
+    if (widget.phone) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.routine.name),
+        ),
+        body: build,
+      );
+    }
+    return Center(
+      child: build,
     );
   }
 
